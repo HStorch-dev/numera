@@ -25,3 +25,5 @@ pnpm-debug.log*
 .vscode/
 .DS_Store
 Thumbs.db
+# Generated Prisma Client
+apps/api/src/generated/prisma/

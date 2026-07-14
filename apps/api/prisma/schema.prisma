@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  ACCOUNTANT
+  MEMBER
+}
+
+model User {
+  id           String               @id @default(uuid())
+  email        String               @unique
+  passwordHash String
+  firstName    String?
+  lastName     String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  memberships  OrganizationMember[]
+}
+
+model Organization {
+  id        String               @id @default(uuid())
+  name      String
+  currency  String               @default("ILS")
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  members   OrganizationMember[]
+}
+
+model OrganizationMember {
+  id             String   @id @default(uuid())
+  role           UserRole @default(MEMBER)
+  userId         String
+  organizationId String
+  createdAt      DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+}
