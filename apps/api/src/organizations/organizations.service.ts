@@ -1,4 +1,4 @@
-﻿import { Injectable } from "@nestjs/common";
+﻿import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma.service.js";
 import type { CreateOrganizationDto } from "./dto/create-organization.dto.js";
 
@@ -61,5 +61,44 @@ export class OrganizationsService {
       ...organization,
       role: members[0]?.role,
     }));
+  }
+
+  async findOneForUser(userId: string, organizationId: string) {
+    const organization = await this.prisma.organization.findFirst({
+      where: {
+        id: organizationId,
+        members: {
+          some: {
+            userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+        members: {
+          where: {
+            userId,
+          },
+          select: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    if (!organization) {
+      throw new NotFoundException("Organization not found");
+    }
+
+    const { members, ...organizationData } = organization;
+
+    return {
+      ...organizationData,
+      role: members[0]?.role,
+    };
   }
 }
