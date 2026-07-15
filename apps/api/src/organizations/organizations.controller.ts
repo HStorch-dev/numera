@@ -2,6 +2,8 @@
   Body,
   Controller,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   UseGuards,
 } from "@nestjs/common";
@@ -29,5 +31,16 @@ export class OrganizationsController {
   @Get()
   findAll(@CurrentUser() user: AuthenticatedUser) {
     return this.organizationsService.findForUser(user.id);
+  }
+
+  @Get(":id")
+  findOne(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param("id", new ParseUUIDPipe()) organizationId: string,
+  ) {
+    return this.organizationsService.findOneForUser(
+      user.id,
+      organizationId,
+    );
   }
 }
