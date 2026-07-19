@@ -13,13 +13,18 @@ import type { AuthenticatedUser } from "../auth/authenticated-user.interface.js"
 import { CurrentUser } from "../auth/current-user.decorator.js";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard.js";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto.js";
+import { UpdateInvoiceStatusDto } from "./dto/update-invoice-status.dto.js";
 import { UpdateInvoiceDto } from "./dto/update-invoice.dto.js";
+import { InvoiceStatusService } from "./invoice-status.service.js";
 import { InvoicesService } from "./invoices.service.js";
 
 @Controller("organizations/:organizationId/invoices")
 @UseGuards(JwtAuthGuard)
 export class InvoicesController {
-  constructor(private readonly invoicesService: InvoicesService) {}
+  constructor(
+    private readonly invoicesService: InvoicesService,
+    private readonly invoiceStatusService: InvoiceStatusService,
+  ) {}
 
   @Post()
   create(
@@ -59,6 +64,23 @@ export class InvoicesController {
       user.id,
       organizationId,
       invoiceId,
+    );
+  }
+
+  @Patch(":invoiceId/status")
+  updateStatus(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param("organizationId", new ParseUUIDPipe())
+    organizationId: string,
+    @Param("invoiceId", new ParseUUIDPipe())
+    invoiceId: string,
+    @Body() dto: UpdateInvoiceStatusDto,
+  ) {
+    return this.invoiceStatusService.updateStatus(
+      user.id,
+      organizationId,
+      invoiceId,
+      dto.status,
     );
   }
 
