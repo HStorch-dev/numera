@@ -1,6 +1,7 @@
 ﻿import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma.service.js";
 import type { CreateCustomerDto } from "./dto/create-customer.dto.js";
+import type { UpdateCustomerDto } from "./dto/update-customer.dto.js";
 
 @Injectable()
 export class CustomersService {
@@ -26,6 +27,35 @@ export class CustomersService {
 
     if (!organization) {
       throw new NotFoundException("Organization not found");
+    }
+  }
+
+  private normalizeOptional(
+    value: string | undefined,
+  ): string | null | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    return value.trim() || null;
+  }
+
+  private async ensureCustomerExists(
+    organizationId: string,
+    customerId: string,
+  ) {
+    const customer = await this.prisma.customer.findFirst({
+      where: {
+        id: customerId,
+        organizationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!customer) {
+      throw new NotFoundException("Customer not found");
     }
   }
 
@@ -84,5 +114,52 @@ export class CustomersService {
     }
 
     return customer;
+  }
+
+  async updateForOrganization(
+    userId: string,
+    organizationId: string,
+    customerId: string,
+    dto: UpdateCustomerDto,
+  ) {
+    await this.ensureOrganizationAccess(userId, organizationId);
+    await this.ensureCustomerExists(organizationId, customerId);
+
+    return this.prisma.customer.update({
+      where: {
+        id: customerId,
+      },
+      data: {
+        name: dto.name?.trim(),
+        email:
+          dto.email === undefined
+            ? undefined
+            : dto.email.trim().toLowerCase() || null,
+        phone: this.normalizeOptional(dto.phone),
+        taxId: this.normalizeOptional(dto.taxId),
+        address: this.normalizeOptional(dto.address),
+        notes: this.normalizeOptional(dto.notes),
+      },
+    });
+  }
+
+  async deleteForOrganization(
+    userId: string,
+    organizationId: string,
+    customerId: string,
+  ) {
+    await this.ensureOrganizationAccess(userId, organizationId);
+    await this.ensureCustomerExists(organizationId, customerId);
+
+    await this.prisma.customer.delete({
+      where: {
+        id: customerId,
+      },
+    });
+
+    return {
+      deleted: true,
+      customerId,
+    };
   }
 }
