@@ -43,6 +43,7 @@ model Organization {
   members   OrganizationMember[]
   customers Customer[]
   invoices  Invoice[]
+  payments  Payment[]
 }
 
 model OrganizationMember {
@@ -103,6 +104,7 @@ model Invoice {
   organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items        InvoiceItem[]
+  payments     Payment[]
 
   @@unique([organizationId, number])
   @@index([organizationId])
@@ -127,4 +129,24 @@ model InvoiceItem {
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@index([invoiceId])
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  organizationId String
+  invoiceId      String
+  amountCents    Int
+  paidAt         DateTime @default(now())
+  method         String?
+  reference      String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([invoiceId])
+  @@index([organizationId, paidAt])
 }
