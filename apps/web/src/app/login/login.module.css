@@ -1,0 +1,413 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: 40px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns:
+    minmax(360px, 460px)
+    minmax(420px, 1fr);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(40px, 7vw, 110px);
+  color: #f7f8ff;
+  background:
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(122, 96, 255, 0.18),
+      transparent 35%
+    ),
+    #070914;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+  background-size: 60px 60px;
+  mask-image:
+    linear-gradient(to bottom, black, transparent);
+}
+
+.glowOne,
+.glowTwo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+
+.glowOne {
+  width: 360px;
+  height: 360px;
+  top: -180px;
+  right: 10%;
+  background: rgba(124, 96, 255, 0.25);
+}
+
+.glowTwo {
+  width: 300px;
+  height: 300px;
+  bottom: -170px;
+  left: 5%;
+  background: rgba(46, 205, 255, 0.14);
+}
+
+.card,
+.visual {
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 25px;
+  background: rgba(15, 18, 37, 0.82);
+  backdrop-filter: blur(28px);
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.35),
+    inset 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-size: 21px;
+  font-weight: 900;
+  background:
+    linear-gradient(135deg, #967fff, #5743df);
+  box-shadow:
+    0 15px 35px rgba(107, 80, 238, 0.38);
+}
+
+.brand > div:last-child {
+  display: grid;
+  gap: 3px;
+}
+
+.brand strong {
+  letter-spacing: 2px;
+}
+
+.brand span {
+  color: #737b9a;
+  font-size: 8px;
+  letter-spacing: 1.2px;
+}
+
+.heading {
+  margin-top: 35px;
+}
+
+.heading > span {
+  color: #9a8cff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.heading h1 {
+  margin: 8px 0 0;
+  font-size: 35px;
+  letter-spacing: -1px;
+}
+
+.heading p {
+  margin: 10px 0 0;
+  color: #8e95b2;
+  font-size: 12px;
+}
+
+.switcher {
+  margin-top: 25px;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.switcher button {
+  height: 38px;
+  border: 0;
+  border-radius: 9px;
+  color: #79819f;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.switcher button.active {
+  color: white;
+  background: rgba(132, 112, 255, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(151, 135, 255, 0.12);
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.nameGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+
+.form label {
+  display: grid;
+  gap: 7px;
+}
+
+.form label span {
+  color: #a6acc3;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.form input {
+  width: 100%;
+  height: 45px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  outline: none;
+  color: white;
+  background: rgba(255, 255, 255, 0.035);
+  transition: 160ms ease;
+}
+
+.form input:focus {
+  border-color: rgba(143, 124, 255, 0.5);
+  box-shadow: 0 0 0 4px rgba(139, 124, 255, 0.08);
+}
+
+.form input::placeholder {
+  color: #59617d;
+}
+
+.error {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 102, 122, 0.15);
+  border-radius: 10px;
+  color: #ff91a0;
+  background: rgba(255, 102, 122, 0.07);
+  font-size: 10px;
+}
+
+.submit {
+  height: 47px;
+  border: 0;
+  border-radius: 13px;
+  color: white;
+  background:
+    linear-gradient(135deg, #8d77ff, #5742db);
+  box-shadow:
+    0 17px 38px rgba(100, 72, 229, 0.32);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.security {
+  margin: 17px 0 0;
+  color: #626a87;
+  text-align: center;
+  font-size: 8px;
+}
+
+.visual {
+  min-height: 530px;
+  display: grid;
+  place-items: center;
+}
+
+.orbit {
+  position: absolute;
+  width: 430px;
+  height: 430px;
+  border: 1px solid rgba(139, 124, 255, 0.14);
+  border-radius: 50%;
+  animation: spin 18s linear infinite;
+}
+
+.orbit::before,
+.orbit::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.orbit::before {
+  inset: 65px;
+  border: 1px solid rgba(59, 211, 255, 0.12);
+}
+
+.orbit::after {
+  width: 10px;
+  height: 10px;
+  top: 40px;
+  left: 82px;
+  background: #52ddff;
+  box-shadow: 0 0 22px #52ddff;
+}
+
+.core {
+  position: relative;
+  width: 245px;
+  height: 245px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(255, 255, 255, 0.13),
+      transparent 28%
+    ),
+    rgba(18, 22, 45, 0.87);
+  box-shadow:
+    0 0 90px rgba(116, 91, 255, 0.22),
+    inset 0 0 40px rgba(139, 124, 255, 0.08);
+  animation: float 4s ease-in-out infinite;
+}
+
+.coreLogo {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 21px;
+  font-size: 28px;
+  font-weight: 900;
+  background:
+    linear-gradient(135deg, #9b86ff, #5742d9);
+  box-shadow:
+    0 20px 45px rgba(103, 75, 231, 0.45);
+}
+
+.core strong {
+  font-size: 16px;
+}
+
+.core span {
+  margin-top: 8px;
+  color: #7c849f;
+  font-size: 9px;
+}
+
+.floatCard {
+  position: absolute;
+  min-width: 150px;
+  padding: 14px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(17, 21, 42, 0.83);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.28);
+}
+
+.floatCard span {
+  color: #7f87a4;
+  font-size: 9px;
+}
+
+.floatCard strong {
+  font-size: 12px;
+}
+
+.income {
+  top: 80px;
+  right: 5%;
+  animation: float 4.5s -1s ease-in-out infinite;
+}
+
+.ai {
+  bottom: 85px;
+  left: 5%;
+  animation: float 4.5s -2.6s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-11px);
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: minmax(300px, 480px);
+  }
+
+  .visual {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 15px;
+  }
+
+  .card {
+    padding: 22px;
+  }
+
+  .nameGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .core,
+  .floatCard {
+    animation: none;
+  }
+}
