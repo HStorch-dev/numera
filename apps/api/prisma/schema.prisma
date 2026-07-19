@@ -14,6 +14,15 @@ enum UserRole {
   MEMBER
 }
 
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELED
+}
+
 model User {
   id           String               @id @default(uuid())
   email        String               @unique
@@ -33,6 +42,7 @@ model Organization {
   updatedAt DateTime             @updatedAt
   members   OrganizationMember[]
   customers Customer[]
+  invoices  Invoice[]
 }
 
 model OrganizationMember {
@@ -62,7 +72,59 @@ model Customer {
   updatedAt      DateTime @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
 
   @@index([organizationId])
   @@index([organizationId, name])
+}
+
+model Invoice {
+  id             String        @id @default(uuid())
+  organizationId String
+  customerId     String?
+  number         String
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime?
+  currency       String        @default("ILS")
+
+  customerName  String
+  customerEmail String?
+  customerTaxId String?
+  notes         String?
+
+  subtotalCents Int @default(0)
+  taxCents      Int @default(0)
+  totalCents    Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  items        InvoiceItem[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([organizationId, status])
+}
+
+model InvoiceItem {
+  id                String @id @default(uuid())
+  invoiceId         String
+  description       String
+  quantity          Int    @default(1)
+  unitPriceCents    Int
+  taxRateBps        Int    @default(0)
+  lineSubtotalCents Int
+  lineTaxCents      Int
+  lineTotalCents    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
 }
